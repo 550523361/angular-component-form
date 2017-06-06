@@ -1,0 +1,161 @@
+    <div class="communityChooseContainer" *ngIf="chooseArray.length>0">
+      <span class="leftInnerGroupContainer" *ngFor="let community of chooseArray">
+          <span class="itemBlock">{{community.name}} <span class="itemRemoveIcon" (click)="removeCommunity(community.id)">×</span></span>
+      </span>
+    </div>
+    <div *ngIf="chooseAreaArray.length>0" class="areaChooseContainer">
+        <span class="leftInnerGroupContainer" *ngFor="let area of chooseAreaArray">
+            <span class="itemBlock">{{area.name}}<span class="itemRemoveIcon"  (click)="removeArea([area])">×</span></span>
+        </span>
+    </div>
+<form novalidate [formGroup]="formGroup" (ngSubmit)="submit(formGroup.value)">
+  <div *ngFor="let element of formModel.elements;let i = index;" [ngSwitch]="element.type" class="formRow" style="padding: 0px;">
+            <span  *ngSwitchCase="'input'">
+                <div *ngIf="!element.hidden">
+                  <label class="formLeftLabel" for="input_{{element.prop}}_{{i}}"><span *ngIf="element.required" class="required">*</span>{{element.label}}:</label>
+                  <input type="text" id="input_{{element.prop}}_{{i}}" name="{{element.prop}}" formControlName="{{element.prop}}">
+                  <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                </div>
+            </span>
+            <span  *ngSwitchCase="'date'">
+                <div *ngIf="!element.hidden">
+                  <label class="formLeftLabel" for="date_{{element.prop}}_{{i}}"><span *ngIf="element.required" class="required">*</span>{{element.label}}:</label>
+                  <input type="text" id="date_{{element.prop}}_{{i}}" name="{{element.prop}}" dateChoose [chooseConfig]="{element:element,dateConfig:element.chooseConfig,control:formGroup.get(element.prop)}" formControlName="{{element.prop}}">
+                  <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                </div>
+            </span>
+            <span  *ngSwitchCase="'upload'">
+                <div *ngIf="!element.hidden" class="uploadContainer">
+                  <label class="formLeftLabel"><span *ngIf="element.required" class="required">*</span>{{element.label}}:</label>
+                  <label for="upload_{{element.prop}}_{{i}}">
+                    <span class="uploadImageContainer" [ngClass]="element.uploadClass">
+                      <span class="deleteIcon" (click)="operateUtil($event,element,'remove')">×</span>
+                      <img *ngIf="formGroup.get(element.prop).value" src="{{formGroup.get(element.prop).value.showUrl}}">
+                      <img *ngIf="!formGroup.get(element.prop).value" src="http://ejiaziimgtest.goodaa.com.cn/pic_5b2e79e9-6e7c-4bfb-8330-01a9313bbcbd.jpg">
+                      <div class="operateBtnContainer" style="display: none;">
+                        <span class="left"  (click)="operateUtil($event,element,'left',i)">←</span>
+                        <span class="right" (click)="operateUtil($event,element,'right',i)">→</span>
+                      </div>
+                    </span>
+                  </label>
+                  <input type="file" [multiple]="element.multiple" fileUpload="element" [accept]="element.imageConfig.extend" [uploadConfig]="{formControl:formGroup.get(element.prop),config:element.imageConfig}" id="upload_{{element.prop}}_{{i}}" >
+                  <input type="hidden" id="upload_{{element.prop}}_{{i}}_hidden" name="{{element.prop}}" formControlName="{{element.prop}}">
+                  <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                </div>
+            </span>
+            <span  *ngSwitchCase="'radio'">
+                <span *ngIf="!element.hidden">
+                      <label class="formLeftLabel"><span *ngIf="element.required" class="required">*</span>{{element.label}}:</label>
+                      <span *ngFor="let option of element.options;let i=index;">
+                          <input type="radio"  id="radio_{{element.prop}}_{{i}}"  name="{{element.prop}}" [checked]="option.value==element.defaultValue" value="{{option.value}}" formControlName="{{element.prop}}">
+                          <label for="radio_{{element.prop}}_{{i}}">{{option.label}}</label>
+                      </span>
+                      <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                </span>
+            </span>
+            <span  *ngSwitchCase="'checkbox'">
+                <span *ngIf="!element.hidden">
+                    <label  class="formLeftLabel"><span *ngIf="element.required" class="required">*</span>{{element.label}}:</label>
+                    <span formArrayName="{{element.prop}}">
+                        <span *ngFor="let option of formGroup.get(element.prop).controls;let i=index;" [formGroupName]="i">
+                              <input type="checkbox"  id="{{element.type}}_{{element.prop}}_{{i}}" name="value" formControlName="checked">
+                              <label for="{{element.type}}_{{element.prop}}_{{i}}">{{option.value.label}}</label>
+                        </span>
+                    </span>
+                    <span class="ng-invalid-msg" *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                </span>
+            </span>
+            <span  *ngSwitchCase="'select'">
+                <span *ngIf="!element.hidden">
+                      <label class="formLeftLabel"><span *ngIf="element.required" class="required">*</span>{{element.label}}:</label>
+                      <select formControlName="{{element.prop}}" id="select_{{element.prop}}_{{i}}"  name="{{element.prop}}">
+                        <option *ngFor="let option of element.options;let i=index;" [selected]="option.value==element.defaultValue" value="{{option.value}}">{{option.label}}</option>
+                      </select>
+                      <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                </span>
+            </span>
+            <span  *ngSwitchCase="'array'">
+                <label  class="formLeftLabel"><span *ngIf="element.required" class="required">*</span>{{element.label}}: </label>
+                <input type="text" formControlName="{{element.prop}}LinkValidate" *ngIf="!element.noNeedValidateElement==true">
+                <span formArrayName="{{element.prop}}" class="arrayElementsContainer">
+                        <span *ngFor="let optionFormControl of formGroup.get(element.prop).controls;let ii=index;let first=first;let last=last;" [formGroupName]="ii">
+                               <span [ngSwitch]="optionFormControl.value.type" class="formRowArray">
+                                      <span  *ngSwitchCase="'input'">
+                                          <span *ngIf="!element.hidden">
+                                            <label class="formLeftLabelArray" for="array_input_{{optionFormControl.prop}}_{{i}}"><span *ngIf="element.required" class="required">*</span>{{optionFormControl.value.label}}</label>
+                                            <input type="text" id="array_input_{{optionFormControl.prop}}_{{i}}" name="{{element.prop}}" formControlName="value">
+                                            <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                                          </span>
+                                      </span>
+                                      <span  *ngSwitchCase="'searchBtn'">
+                                          <span *ngIf="!element.hidden">
+                                            <label class="searchBtn" (click)="optionFormControl.value.click(formGroup.value[element.prop])">{{optionFormControl.value.label}}</label>
+                                          </span>
+                                          <div class="arrayListContainer">
+                                              <div *ngFor="let community of queryResultCommunityList;let index=index;" class="communityList" (click)="chooseCommunity(community)" [ngClass]="{lineChecked:community.checked}">
+                                                <span style="display: inline-block;padding: 3px;background: #eee;color: #333;width: 20px;text-align: center;">
+                                                  {{index+1}}
+                                                </span>
+                                                <span style="display: inline-block;padding: 3px 10px;color: #000;">
+                                                  {{community.name}}
+                                                </span>
+                                                <span [ngClass]="{checkFlag:community.checked,unCheckFlag:!community.checked}"></span>
+                                              </div>
+                                          </div>
+                                      </span>
+                                      <span  *ngSwitchCase="'button'">
+                                          <span *ngIf="!element.hidden">
+                                            <label class="searchBtn" (click)="optionFormControl.value.click(formGroup.value[element.prop])">{{optionFormControl.value.label}}</label>
+                                          </span>
+                                      </span>
+                                      <span  *ngSwitchCase="'date'">
+                                          <span *ngIf="!element.hidden">
+                                            <label class="formLeftLabelArray" for="array_date_{{optionFormControl.value.prop}}_{{ii}}_{{i}}"><span *ngIf="element.required" class="required">*</span>{{optionFormControl.value.label}}</label>
+                                            <input type="text" id="array_date_{{optionFormControl.value.prop}}_{{ii}}_{{i}}" name="{{element.prop}}" dateChoose [chooseConfig]="{element:element,dateConfig:optionFormControl.value.chooseConfig,control:optionFormControl.controls['value']}" formControlName="value">
+                                            <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                                          </span>
+                                      </span>
+                                      <span  *ngSwitchCase="'select'">
+                                          <span *ngIf="!element.hidden">
+                                                <label class="formLeftLabelArray"><span *ngIf="element.required" class="required">*</span>{{optionFormControl.value.label}}</label>
+                                                <select formControlName="value" id="array_select_{{optionFormControl.value.prop}}_{{ii}}{{i}}"  name="{{optionFormControl.value.prop}}">
+                                                  <option *ngFor="let option of element.options[ii].options;" [selected]="option.value==optionFormControl.value.defaultValue" value="{{option.value}}">{{option.label}}</option>
+                                                </select>
+                                                <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop).errors|keys ">{{formGroup.get(element.prop).errors[key]}}</span>
+                                          </span>
+                                      </span>
+                                      <span  *ngSwitchCase="'upload'">
+                                          <span *ngIf="!element.hidden" class="uploadContainer">
+                                            <label class="formLeftLabelArray"><span *ngIf="optionFormControl.value.required" class="required">*</span>{{optionFormControl.value.label}}</label>
+                                            <label for="array_upload_{{optionFormControl.value.prop}}_{{ii}}_{{i}}">
+                                              <span class="uploadImageContainer" [ngClass]="optionFormControl.value.uploadClass">
+                                                <span class="deleteIcon" (click)="operateUtil($event,element,'remove',optionFormControl.controls['value'])" title="删除图片">×</span>
+                                                <img *ngIf="optionFormControl.value.value.showUrl!=''&&optionFormControl.value.value.showUrl!=null&&optionFormControl.value.value.showUrl!=undefined" src="{{optionFormControl.value.value.showUrl}}">
+                                                <img *ngIf="optionFormControl.value.value.showUrl==''||optionFormControl.value.value.showUrl==null||optionFormControl.value.value.showUrl==undefined" src="http://ejiaziimgtest.goodaa.com.cn/pic_5b2e79e9-6e7c-4bfb-8330-01a9313bbcbd.jpg">
+                                                <div class="operateBtnContainer">
+                                                  <span class="left" *ngIf="first" style="width: 0px;padding: 0px;"></span>
+                                                  <span class="left" *ngIf="!first"  (click)="operateUtil($event,element,'left',optionFormControl.controls['value'],ii)" title="向左移动">←</span>
+                                                  <span class="right" *ngIf="last" style="width: 0px;padding: 0px;">→</span>
+                                                  <span class="right" *ngIf="!last" (click)="operateUtil($event,element,'right',optionFormControl.controls['value'],ii)" title="向右移动">→</span>
+                                                </div>
+                                              </span>
+                                            </label>
+                                            <input type="file" [multiple]="optionFormControl.value.multiple" fileUpload="optionFormControl.value" [accept]="optionFormControl.value.imageConfig.extend" [uploadConfig]="{formControl:optionFormControl.controls['value'],config:optionFormControl.value.imageConfig}" id="array_upload_{{optionFormControl.value.prop}}_{{ii}}_{{i}}" >
+                                            <input type="hidden" id="array_upload_{{optionFormControl.value.prop}}_{{i}}_hidden" name="{{optionFormControl.value.prop}}" formControlName="value">
+                                            <span class="ng-invalid-msg"  *ngFor="let key of optionFormControl.errors|keys ">{{optionFormControl.errors[key]}}</span>
+                                          </span>
+                                      </span>
+                              </span>
+                        </span>
+                 </span>
+                <span *ngIf="!element.noNeedValidateElement==true">
+                  <span class="ng-invalid-msg"  *ngFor="let key of formGroup.get(element.prop+'LinkValidate').errors|keys ">{{formGroup.get(element.prop+'LinkValidate').errors[key]}}</span>
+                </span>
+                <span *ngIf="element.noNeedValidateElement==true">
+                </span>
+            </span>
+  </div>
+  <!--<div class="submitBtnContainer">
+    <input type="submit" value="提交" class="submitBtn" [disabled]="formGroup.status=='INVALID'" >
+  </div>-->
+</form>
