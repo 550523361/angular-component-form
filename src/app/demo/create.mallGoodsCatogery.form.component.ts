@@ -1,29 +1,25 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {BaseDataService} from "angular-component-service";
-import {FormBuilder} from "@angular/forms";
 import {Router} from "@angular/router";
-import {BaseValidateService} from "../../service/validate/base.validate.service";
-import {BaseFormCreateComponent} from "../../form/base.from.create.component";
-import {BaseDateChooseDirective} from "../../directive/base.date.choose";
 
 
 @Component({
   selector:"create-goods-form",
-  templateUrl:"../../form/base.from.create.component.html",
-  styleUrls:["../../form/base.from.create.component.css"],
-  providers:[BaseValidateService,BaseDataService,BaseDateChooseDirective]
+  template:"<base-form-component [formModel]='formModel'></base-form-component>",
+  providers:[BaseDataService]
 })
-export class CreateMallGoodsCatogeryFormComponent extends BaseFormCreateComponent implements OnInit{
+export class CreateMallGoodsCatogeryFormComponent{
 
   constructor(
-    public formBuilder:FormBuilder,public baseValidateService:BaseValidateService,public baseDataService:BaseDataService,private router:Router
+    public baseDataService:BaseDataService,private router:Router
   ){
-    super(formBuilder,baseDataService);
   }
 
-  ngOnInit(){
-    this.formModel={
+ formModel={
       url:"goods/saveGoods.json",
+      submit:(value:any)=>{
+        this.submit(value);
+      },
       elements:[
         {
           type:"input",
@@ -33,9 +29,7 @@ export class CreateMallGoodsCatogeryFormComponent extends BaseFormCreateComponen
           placeholder:"请输入商品类型",
           defaultValue:"",
           required:true,
-          validates:[(control:any)=>{
-            return this.baseValidateService.baseValidate(control,{required:true,maxlength:5});
-          }]
+          validate:{required:true,maxlength:5}
         },
         {
           label:"分类图标",
@@ -46,33 +40,14 @@ export class CreateMallGoodsCatogeryFormComponent extends BaseFormCreateComponen
           require:true,
           defaultValue:"",
           imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-          validates:[(control:any)=>{
-            return this.baseValidateService.baseValidate(control,{required:true});
-          }]
+          validate:{required:true}
         },
       ]
     };
-    this.initForm()
-  }
 
-
-  open(){
-
-  }
-
-  close(data:any){
-    console.log("closedata",data)
-  }
-
-  serviceArea:any;
-  chooseResult(data:any){
-    console.log("goods form chooseResult",data);
-    this.serviceArea=data;
-  }
-
-  submit(){
-    console.log("sub sub this.formGroup",this.formGroup.value,this.serviceArea)
-    this.baseDataService.listData({url:this.formModel.url,param:this.formGroup.value,httpMethod:"post"}).subscribe((data:any)=>{
+  submit(value:any){
+    console.log("sub sub this.formGroup",value)
+    this.baseDataService.listData({url:this.formModel.url,param:value,httpMethod:"post"}).subscribe((data:any)=>{
       console.log(data)
     },(error:any)=>{
       console.log(error);

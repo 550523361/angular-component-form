@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {BaseDataService} from "angular-component-service";
 import {Http} from "@angular/http";
+import {FormGroup} from "@angular/forms";
 /**
  * Created by xiankun.feng on 2017/5/3.
  */
@@ -20,9 +21,10 @@ export class BaseValidateService extends BaseDataService{
    * @returns {{}} 返回验证结果 是json对象或Promise实例(异步校验)
    */
   baseValidate(prop:any,rulues:any,param:any={},remoteService:any={}):any{
-    let error:any={};
+    let error:any=null;
     let value:any=prop.value||"";
     for(let key in rulues){
+      console.log("prop",prop,"keykeykey",key)
       let ruleValue:any=rulues[key];
       if(key=="required"&&value==""){
         error= {"required":"不能为空"};
@@ -107,14 +109,20 @@ export class BaseValidateService extends BaseDataService{
           continue;
         }
         let grandfatherControl:any=formGroup.get(grandfather);
+        console.log("grandfatherControl",grandfatherControl)
         if(prop.parent){
           let lazyTimerId:any=setTimeout(function () {
             let checkedNum:any=prop.parent.parent.controls.filter((optionControl:any)=>{
-              return optionControl.value.value!="";
+              if(optionControl instanceof FormGroup ){
+                return optionControl["value"].value.imgId;
+              }else{
+                return optionControl.value.value.imgId;
+              }
             }).length;
             if(checkedNum<rulues["arrayUploadRequired"]*1){
               grandfatherControl.setErrors({"required":"得至少上传！"+rulues["arrayUploadRequired"]+"个图吧！"});
               grandfatherControl.setValue("得至少上传！"+rulues["arrayUploadRequired"]+"个图吧！");
+              grandfatherControl.updateValueAndValidity(true,true);
             }else{
               grandfatherControl.setErrors({});
               grandfatherControl.setValue("");
@@ -235,14 +243,28 @@ export class BaseValidateService extends BaseDataService{
         break;
       }else if(key=="remote"){
         //http 远程验证。。。
+        console.log("paramparamparam",param)
         let formGroup:any=prop.parent;
         if(formGroup){
           let queryParam:any={};
-          for(let queryProp in param){
+          let alias:any=param.alias||{};//别名请求比如省id为provinceId 实际请求参数名称为pId 属性名称与请求参数不一致的时候使用尽管不常用但是有可能用得到
+          for(let queryProp in param.remoteValidateRequiredParam){
+            if(!formGroup.get(queryProp)){
+              continue;
+            }
             queryParam[queryProp]=formGroup.get(queryProp).value;
+            if(alias[queryProp]){
+              queryParam[alias[queryProp]]=queryParam[queryProp];
+            }
           }
-          this.remoteSyncValidate({body:queryParam,value:value},remoteService).subscribe((item:any)=>{
-            prop.setErrors({"remote":item.json().msg});
+          this.remoteSyncValidate({body:queryParam,value:value},param.remoteService).subscribe((item:any)=>{
+            let result:any=item.json();
+            if(result.code==1){
+              prop.setErrors(null);
+            }else{
+              prop.setErrors({"remote":item.json().msg});
+            }
+
           });
         }
       }
@@ -287,7 +309,7 @@ export class BaseValidateService extends BaseDataService{
         url:remoteService.url,
         baseUrl:remoteService.baseUrl,
         param:param.body,
-        httpMethod:"post"
+        httpMethod:remoteService.httpMethod||"post"
     };
     return this.listData(queryParam);
   }

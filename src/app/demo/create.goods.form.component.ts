@@ -1,28 +1,25 @@
-import {Component, OnInit} from "@angular/core";
-import {FormBuilder} from "@angular/forms";
+import {Component} from "@angular/core";
 import {Router} from "@angular/router";
-import {BaseValidateService} from "../../service/validate/base.validate.service";
 import {BaseDateChooseDirective} from "../../directive/base.date.choose";
 import {BaseDataService} from "angular-component-service";
-import {BaseFormCreateComponent} from "../../form/base.from.create.component";
 
 @Component({
   selector:"create-goods-form",
-  templateUrl:"../../form/base.from.create.component.html",
-  styleUrls:["../../form/base.from.create.component.css"],
-  providers:[BaseValidateService,BaseDataService,BaseDateChooseDirective]
+  template:"<base-form-component [formModel]='formModel'></base-form-component>",
+  providers:[BaseDateChooseDirective,BaseDataService]
 })
-export class CreateGoodsFormComponent extends BaseFormCreateComponent implements OnInit{
+export class CreateGoodsFormComponent{
 
   constructor(
-    public formBuilder:FormBuilder,public baseValidateService:BaseValidateService,public baseDataService:BaseDataService,private router:Router
+      public baseDataService:BaseDataService,private router:Router
   ){
-    super(formBuilder,baseDataService);
   }
 
-  ngOnInit(){
-    this.formModel={
+  formModel={
       url:"goods/saveGoods.json",
+      submit:(value:any)=>{
+        this.submit(value);
+      },
       elements:[
         {
           type:"input",
@@ -32,9 +29,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           placeholder:"请输入商品类型",
           defaultValue:"",
           required:true,
-          validates:[(control:any)=>{
-            return this.baseValidateService.baseValidate(control,{required:true});
-          }]
+          validate:{required:true}
         },
         {
           type:"radio",
@@ -54,11 +49,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               showValue:1
             }
           ],
-          validates:[(data:any)=>{
-            let param:any={prop:"serviceRange",formModel:this.formModel};
-            let error:any=this.baseValidateService.baseValidate(data,{watchers:true},param);
-            return error;
-          }]
+          validate:{required:true}
         },
         {
           label:"选择服务范围",
@@ -118,12 +109,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           ],
           placeholder:"请选择分类",
           required:true,
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"sex",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{watchers:true},param);
-            }
-          ],
+          validate:{watchers:true}
         },
         {
           type:"input",
@@ -132,12 +118,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           placeholder:"请输入商品名称",
           defaultValue:"",
           required:true,
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"goodsName",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true,maxlength:5},param);
-            }
-          ]
+          validate:{required:true,maxlength:5}
         },
         {
           type:"input",
@@ -146,12 +127,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           placeholder:"请输入商品原价",
           defaultValue:"",
           required:true,
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"goodsOrgPrice",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5},param);
-            }
-          ]
+          validate:{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5}
         },
         {
           type:"input",
@@ -160,12 +136,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           placeholder:"请输入商品现价",
           defaultValue:"",
           required:true,
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"goodsCurPrice",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5},param);
-            }
-          ]
+          validate:{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5}
         },
         {
           type:"input",
@@ -174,12 +145,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           placeholder:"请输入商品库存",
           defaultValue:"",
           required:true,
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"goodsLib",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5},param);
-            }
-          ]
+          validate:{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5}
         },
         {
           type:"radio",
@@ -198,12 +164,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
             }
           ],
           required:true,
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"isLimit",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{watchers:true},param);
-            }
-          ]
+          validate:{watchers:true}
         },
         {
           type:"input",
@@ -218,12 +179,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               showValue:"0"
             }
           ],
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"buyLimitNum",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5},param);
-            }
-          ]
+          validate:{required:true,number:"###.##",maxvalue:"9999.99",minvalue:"0.01",maxlength:5}
         },
         {
           type:"radio",
@@ -242,12 +198,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           ],
           placeholder:"请输入商品名称",
           required:true,
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"buyLimitNum",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true},param);
-            }
-          ]
+          validate:{required:true}
         },
         {
           type:"select",
@@ -266,12 +217,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               value:"1"
             }
           ],
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"arriveInfo",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true},param);
-            }
-          ]
+          validate:{required:true}
         },
         {
           type:"checkbox",
@@ -286,10 +232,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           placeholder:"请输入名称",
           defaultValue:"2",
           required:true,
-          validates:[(control:any)=>{
-            let param:any={prop:"afterSale",formModel:this.formModel,grandfather:"afterSale",formGroup:this.formGroup};
-            this.baseValidateService.baseValidate(control,{checkboxWatchers:true},param)
-          }]
+          validate:{checkboxWatchers:true}
         },
         {
           type:"input",
@@ -299,13 +242,9 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
             showValue:"1"
           }],
           prop:"goodsQurt",
-          validates:[
-            (data:any)=>{
-              return this.baseValidateService.baseValidate(data,{required:true,number:"##.##",maxvalue:10,minvalue:0.5})
-            }
-          ]
+          validate:{required:true,number:"##.##",maxvalue:10,minvalue:0.5}
         },
-       /* {
+        {
           type:"checkbox",
           label:"体育运动",
           prop:"sports",
@@ -329,12 +268,9 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           placeholder:"请输入名称",
           defaultValue:"2",
           required:true,
-          validates:[(control:any)=>{
-            let param:any={prop:"sports",formModel:this.formModel,grandfather:"sports",formGroup:this.formGroup};
-            this.baseValidateService.baseValidate(control,{checkboxRequired:true,checkboxWatchers:true},param)
-          }]
-        },*/
-        /*{
+          validate:{checkboxRequired:true,checkboxWatchers:true}
+        },
+        {
           type:"array",
           label:"活动时间",
           prop:"compSizeInnerHeight",
@@ -351,13 +287,8 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               prop:"compB",
               value:"1"
             },
-          ],
-          validates:[
-            (data:any)=>{
-              // return this.baseValidateService.baseValidate(data,{required:true,number:"##.##",maxvalue:10,minvalue:0.5})
-            }
           ]
-        },*/
+        },
         {
           label:"头图",
           prop:"firstPic",
@@ -367,9 +298,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           require:true,
           defaultValue:"",
           imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-          validates:[(control:any)=>{
-            return this.baseValidateService.baseValidate(control,{required:true});
-          }]
+          validate:{required:true}
         },
         {
           label:"详情图片",
@@ -385,11 +314,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               value:"",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -398,11 +323,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -411,11 +332,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -424,11 +341,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -437,11 +350,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -450,11 +359,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               value:"",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -463,11 +368,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -476,11 +377,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -489,11 +386,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -502,26 +395,16 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             }
           ],
-          validates:[(control:any)=>{
-            let param:any={prop:"detailPics",formModel:this.formModel,grandfather:"detailPics",formGroup:this.formGroup};
-            return this.baseValidateService.baseValidate(control,{arrayUploadRequired:3},param);
-          }]
+          validate:{arrayUploadRequired:1}
         },
         {
           label:"商品焦点图",
           type:"array",
           prop:"goodsDetailImages",
-          validates:[(control:any)=>{
-            let param:any={prop:"goodsDetailImages",formModel:this.formModel,grandfather:"goodsDetailImages",formGroup:this.formGroup};
-            return this.baseValidateService.baseValidate(control,{arrayUploadRequired:1},param);
-          }],
+          validate:{arrayUploadRequired:1},
           options:[
             {
               label:"",
@@ -533,11 +416,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               showUrl:"",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -549,11 +428,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -565,11 +440,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -581,11 +452,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               imageUrl:"",
               showUrl:"",
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             },
             {
               label:"",
@@ -597,11 +464,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               type:"upload",
               multiple:false,
               uploadClass:{myUploadStyle2:true},
-              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-              validates:[(control:any)=>{
-                console.log(control.value);
-                this.baseValidateService.baseValidate(control,{required:true});
-              }]
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
             }
           ]
         },
@@ -609,28 +472,19 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
           label:"商品重量",
           type:"input",
           prop:"goodsWeight",
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"goodsWeight",formModel:this.formModel};
-              return this.baseValidateService.baseValidate(control,{required:true,number:"###.###",maxvalue:"9999.99",minvalue:"0.001",maxlength:5},param);
-            }
-          ]
+          validate:{required:true,number:"###.###",maxvalue:"9999.99",minvalue:"0.001",maxlength:5}
         },
         {
           label:"描述",
           type:"textarea",
           prop:"goodsDetailInfo",
-          validates:[
-            (data:any)=>{
-
-            }
-          ]
+          validate:{required:true}
         },
         {
           label:"商品发布",
           type:"radio",
           prop:"isPublish",
-          defaultValue:"0",
+          defaultValue:"1",
           options:[
             {
               label:"放入仓库",
@@ -641,12 +495,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
               value:"1"
             }
           ],
-          validates:[
-            (control:any)=>{
-              let param:any={prop:"isPublish",formModel:this.formModel,grandfather:"sports",formGroup:this.formGroup};
-              return this.baseValidateService.baseValidate(control,{watchers:true},param);
-            }
-          ]
+          validate:{watchers:true}
         },
         {
           label:"定时上架",
@@ -677,12 +526,7 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
             next:0.5,
             maxelementid:'endTimeStr',
             minelementid:null
-          },
-          validates:[(control:any)=>{
-          //let param:any={prop:"activeTime",formModel:this.formModel,grandfather:"activeTime",formGroup:this.formGroup};
-          console.log(control.value)
-          //return this.baseValidateService.baseValidate(control,{arrayUploadRequired:1},param);
-        }]
+          }
         },
         {
           label:"结束时间",
@@ -730,35 +574,227 @@ export class CreateGoodsFormComponent extends BaseFormCreateComponent implements
                 minelementid:"activeStartTimeStr"
               }
             }
-          ],
-          validates:[(control:any)=>{
-            let param:any={prop:"activeTime",formModel:this.formModel,grandfather:"activeTime",formGroup:this.formGroup};
-            return this.baseValidateService.baseValidate(control,{arrayUploadRequired:1},param);
-          }]
+          ]
         }
       ]
     };
-    this.initForm()
-  }
 
+  formModel2:any={
+    url:"goods/saveGoods.json",
+    submit:(value:any)=>{
+      this.submit(value);
+    },
+    elements:[
+      {
+        type:"input",
+        label:"远程校验",
+        prop:"name",
+        removeValidateUrl:"",
+        placeholder:"请输入名称",
+        defaultValue:"",
+        required:true,
+        switcher:[{
+          prop:"sports",
+          showValue:2
+        },{
+          prop:"sex",
+          showValue:0
+        }],
+        validate:{remote:true},
+        override:{
+          remoteValidateRequiredParam:{"name":true,name1:true},
+          alias:{name:"inputName"},
+          remoteService:{
+            url:"goods/existName",
+            httpMethod:"get",
+            baseUrl:"https://testmerchant.goodaa.com.cn/ejiazi-merchant/",
+          }
+        }
+      },
+      {
+        type:"input",
+        label:"名称1",
+        prop:"name1",
+        removeValidateUrl:"",
+        placeholder:"请输入名称",
+        defaultValue:"",
+        required:true,
+        switcher:[
+          {
+            prop:"sports",
+            showValue:1
+          }
+        ],
+        validate:{required:true,maxlength:15,minlength:1,number:"###.##",maxvalue:300.01,minvalue:100.00}
+      },
+      {
+        type:"radio",
+        label:"性别",
+        prop:"sex",
+        defaultValue:"0",
+        switcher:[
+          {
+            prop:"sports",
+            showValue:3
+          }
+        ],
+        options:[
+          {
+            label:"男",
+            value:"0"
+          },
+          {
+            label:"女",
+            value:"1"
+          }
+        ],
+        placeholder:"请输入名称",
+        required:true,
+        validate:{watchers:true}
+      },
+      {
+        type:"checkbox",
+        label:"爱好",
+        prop:"love",
+        options:[
+          {
+            label:"看报",
+            value:"0"
+          },
+          {
+            label:"看电视",
+            value:"1"
+          },
+          {
+            label:"交友",
+            value:"2"
+          },
+          {
+            label:"创作",
+            value:"3"
+          }
+        ],
+        placeholder:"请输入名称",
+        defaultValue:"",
+        required:true,
+        validate:{maxlength:5}
+      },
+      {
+        type:"checkbox",
+        label:"体育运动",
+        prop:"sports",
+        options:[
+          {
+            label:"跑步",
+            value:"0"
+          },
+          {
+            label:"健身",
+            value:"1"
+          },
+          {
+            label:"瑜伽",
+            value:"2"
+          },
+          {
+            label:"太极",
+            value:"3"}
+        ],
+        placeholder:"请输入名称",
+        defaultValue:"2",
+        required:true,
+        validate:{checkboxRequired:true,checkboxWatchers:true}
+      },
+      {
+        type:"input",
+        label:"内增高",
+        switcher:[{
+          prop:"sex",
+          showValue:"1"
+        }],
+        prop:"innerHeight",
+        validate:{required:true,number:"##.##",maxvalue:10,minvalue:0.5}
+      },
+      {
+        type:"array",
+        label:"活动时间",
+        prop:"compSizeInnerHeight",
+        options:[
+          {
+            label:"",
+            type:"input",
+            prop:"compA",
+            required:true,
+            value:"0"
+          },
+          {
+            label:"至",
+            type:"input",
+            prop:"compB",
+            value:"1"
+          },
+        ]
+      },
+      {
+        label:"头像",
+        prop:"photo",
+        type:"upload",
+        multiple:false,
+        uploadClass:{myUploadStyle:true},
+        imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
+        validate:{required:true}
+      },
+      {
+        label:"详情图片",
+        prop:"detail",
+        type:"upload",
+        multiple:false,
+        uploadClass:{myUploadStyle2:true},
+        imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
+        validate:{required:true}
+      },
+      {
+        label:"商品详情图",
+        type:"array",
+        prop:"goodsDetailImages",
+        validates:[],
+        options:[
+          {
+            label:"",
+            prop:"detailA",
+            type:"upload",
+            value:"",
+            multiple:false,
+            uploadClass:{myUploadStyle2:true},
+            imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+          },
+          {
+            label:"",
+            prop:"detailB",
+            value:"",
+            type:"upload",
+            multiple:false,
+            uploadClass:{myUploadStyle2:true},
+            imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+          },
+          {
+            label:"",
+            prop:"detailC",
+            value:"",
+            type:"upload",
+            multiple:false,
+            uploadClass:{myUploadStyle2:true},
+            imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+          }
+        ],
+        validate:{arrayUploadRequired:3}
+      }
+    ]
+  };
 
-  open(){
-
-  }
-
-  close(data:any){
-    console.log("closedata",data)
-  }
-
-  serviceArea:any;
-  chooseResult(data:any){
-    console.log("goods form chooseResult",data);
-    this.serviceArea=data;
-  }
-
-  submit(){
-    console.log("sub sub this.formGroup",this.formGroup.value,this.serviceArea)
-    this.baseDataService.listData({url:this.formModel.url,param:this.formGroup.value,httpMethod:"post"}).subscribe((data:any)=>{
+  submit(value:any){
+    console.log("sub sub this.formGroup",value)
+    this.baseDataService.listData({url:this.formModel.url,param:value,httpMethod:"post"}).subscribe((data:any)=>{
       console.log(data)
     },(error:any)=>{
       console.log(error);

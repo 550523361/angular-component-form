@@ -1,28 +1,93 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {BaseDataService} from "angular-component-service";
-import {FormBuilder} from "@angular/forms";
 import {Router} from "@angular/router";
-import {BaseValidateService} from "../../service/validate/base.validate.service";
-import {BaseFormCreateComponent} from "../../form/base.from.create.component";
 
 @Component({
   selector:"create-goods-form",
-  templateUrl:"../../form/base.from.create.component.html",
-  styleUrls:["../../form/base.from.create.component.css"],
-  providers:[BaseValidateService,BaseDataService]
+  template:"<base-form-component [formModel]='formModel'></base-form-component>",
+  providers:[BaseDataService]
 })
-export class CreateGoodsFormComponentFormGroup extends BaseFormCreateComponent implements OnInit{
+export class CreateGoodsFormComponentFormGroup{
 
   constructor(
-    public formBuilder:FormBuilder,public baseValidateService:BaseValidateService,public baseDataService:BaseDataService,private router:Router
+    public baseDataService:BaseDataService,private router:Router
   ){
-    super(formBuilder,baseDataService);
   }
 
-  ngOnInit(){
-    this.formModel={
+  formModel={
       url:"goods/saveGoods.json",
+      submit:(value:any)=>{
+        this.submit(value);
+      },
       elements:[
+        /*{
+          label:"商品焦点图",
+          type:"array",
+          prop:"goodsDetailImages",
+          validate:{arrayUploadRequired:1},
+          options:[
+            {
+              label:"",
+              prop:"detailA",
+              type:"upload",
+              value:"",
+              imgId:"",
+              imageUrl:"",
+              showUrl:"",
+              multiple:false,
+              uploadClass:{myUploadStyle2:true},
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+            },
+            {
+              label:"",
+              prop:"detailB",
+              value:"",
+              imgId:"",
+              imageUrl:"",
+              showUrl:"",
+              type:"upload",
+              multiple:false,
+              uploadClass:{myUploadStyle2:true},
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+            },
+            {
+              label:"",
+              prop:"detailC",
+              value:"",
+              imgId:"",
+              imageUrl:"",
+              showUrl:"",
+              type:"upload",
+              multiple:false,
+              uploadClass:{myUploadStyle2:true},
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+            },
+            {
+              label:"",
+              prop:"detailD",
+              value:"",
+              imgId:"",
+              type:"upload",
+              multiple:false,
+              imageUrl:"",
+              showUrl:"",
+              uploadClass:{myUploadStyle2:true},
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+            },
+            {
+              label:"",
+              prop:"detailE",
+              value:"",
+              imgId:"",
+              imageUrl:"",
+              showUrl:"",
+              type:"upload",
+              multiple:false,
+              uploadClass:{myUploadStyle2:true},
+              imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+            }
+          ]
+        },*/
         {
           label:"详情图片     sdfasdf",
           prop:"detailPics",
@@ -30,63 +95,38 @@ export class CreateGoodsFormComponentFormGroup extends BaseFormCreateComponent i
           multiple:false,
           uploadClass:{myUploadStyle2:true},
           options:[
-            [
               {
                 label:"",
                 prop:"detailA",
                 type:"upload",
                 value:"",
                 multiple:false,
+               imageUrl:"",
+               showUrl:"",
                 uploadClass:{myUploadStyle2:true},
-                imageConfig:{id:"imgId",url:"imageUrl",detail:"大转cvhfghdfgh盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-                validates:[(control:any)=>{
-                  //let param={prop:"detailPics",formModel:this.formModel,grandfather:"detailPics",formGroup:this.formGroup};
-                  console.log(control)
-                  //return this.baseValidateService.baseValidate(control,{arrayUploadRequired:1},param);
-                }]
-              }
-            ],
-            [
+                imageConfig:{id:"imgId",url:"imageUrl",detail:"大转cvhfghdfgh盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
+              },
               {
                 label:"",
                 prop:"detailB",
                 value:"",
                 type:"upload",
                 multiple:false,
-                imgId:"",
+               imgId:"",
+               imageUrl:"",
+               showUrl:"",
                 uploadClass:{myUploadStyle2:true},
-                imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"},
-                validates:[(control:any)=>{
-                  //let param={prop:"detailPics",formModel:this.formModel,grandfather:"detailPics",formGroup:this.formGroup};
-                  console.log(control)
-                  //return this.baseValidateService.baseValidate(control,{arrayUploadRequired:1},param);
-                }]
+                imageConfig:{id:"imgId",url:"imageUrl",detail:"大转盘分享图标大小",size:"<30k","validate":true,extend:".png,.jpeg,.jpg"}
               }
-            ]
           ],
-          validates:[(control:any)=>{
-            //let param={prop:"detailPics",formModel:this.formModel,grandfather:"detailPics",formGroup:this.formGroup};
-            console.log(control)
-            //return this.baseValidateService.baseValidate(control,{arrayUploadRequired:1},param);
-          }]
+          validate:{arrayUploadRequired:1}
         }
       ]
     };
-    this.initForm()
-  }
 
-
-  open(){
-
-  }
-
-  close(data:any){
-    console.log("closedata",data)
-  }
-
-  submit(){
-    console.log("sub sub this.formGroup",this.formGroup.value)
-    this.baseDataService.listData({url:this.formModel.url,param:this.formGroup.value,httpMethod:"post"}).subscribe((data:any)=>{
+  submit(value:any){
+    console.log("sub sub this.formGroup",value)
+    this.baseDataService.listData({url:this.formModel.url,param:value,httpMethod:"post"}).subscribe((data:any)=>{
       console.log(data)
     },(error:any)=>{
       console.log(error);

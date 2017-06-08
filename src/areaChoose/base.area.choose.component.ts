@@ -17,7 +17,7 @@ declare var $:any;
 export class BaseAreaChooseComponent extends BaseFormCreateComponent implements OnInit{
 
   @Output()
-  chooseResult:any=new EventEmitter<boolean>();
+  chooseResultEmitter:any=new EventEmitter<boolean>();
 
   noticeChooseResult(){
     let communityList:any=this.chooseArray;
@@ -32,7 +32,7 @@ export class BaseAreaChooseComponent extends BaseFormCreateComponent implements 
 
   noticeWrap(data:any){
     console.log("noticeWrap",data)
-    this.chooseResult.emit(data);
+    this.chooseResultEmitter.emit(data);
   }
 
   constructor(
@@ -40,7 +40,7 @@ export class BaseAreaChooseComponent extends BaseFormCreateComponent implements 
       public baseDataService:BaseDataService,
       public baseValidateService:BaseValidateService
   ){
-    super(formBuilder,baseDataService);
+    super(formBuilder,baseDataService,baseValidateService);
 
   }
 
@@ -220,10 +220,8 @@ export class BaseAreaChooseComponent extends BaseFormCreateComponent implements 
               }
             }
           ],
-          validates:[(control:any)=>{
-            let param:any={prop:"provinceId",formModel:this.formModel,grandfather:"communityChoose",formGroup:this.formGroup};
-            return this.baseValidateService.baseValidate(control,{arrayWatchers:1},param);
-          }]
+          override:{grandfather:"communityChoose",prop:"provinceId"},
+          validate:{arrayWatchers:1}
         },
         {
           label:"区域选择",
@@ -269,12 +267,7 @@ export class BaseAreaChooseComponent extends BaseFormCreateComponent implements 
                   return options;
                 }
               },
-              validates:[
-                (control:any)=>{
-                  let param:any={prop:"province",formModel:this.formModel,grandfather:"activeTime",formGroup:this.formGroup};
-                  this.baseValidateService.baseValidate(control,{checkboxWatchers:true},param)
-                }
-              ]
+              validate:{checkboxWatchers:true}
             },
             {
               label:"市",
@@ -412,10 +405,8 @@ export class BaseAreaChooseComponent extends BaseFormCreateComponent implements 
               }
             }
           ],
-          validates:[(control:any)=>{
-            let param:any={prop:"provinceId",formModel:this.formModel,grandfather:"areaChoose",formGroup:this.formGroup};
-            return this.baseValidateService.baseValidate(control,{arrayWatchers:1},param);
-          }]
+          override:{grandfather:"areaChoose"},
+          validate:{arrayWatchers:1}
         }
       ]
     };

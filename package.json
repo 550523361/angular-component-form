@@ -1,6 +1,6 @@
 {
   "name": "angular-component-form",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -44,5 +44,5 @@
     "tslint": "~4.5.0",
     "typescript": "~2.0.0"
   },
-  "repository":""
+  "repository":"https://github.com/550523361/angular-component-form.git"
 }

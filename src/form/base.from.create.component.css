@@ -5,12 +5,19 @@
   color: red;
 }
 
+.baseFormContainer textarea{
+  width: 70%;
+  border-radius: 3px;
+  border: 1px solid #CCCCCC;
+  resize: none;
+}
+
 select{
   height: 30px;
   padding: 0px 10px;
 }
 
-input{
+input,textarea{
   border: 1px solid #CCCCCC;
 }
 input.ng-invalid{

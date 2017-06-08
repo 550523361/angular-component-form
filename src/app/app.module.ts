@@ -14,13 +14,14 @@ import {BaseUploadDirective} from "../directive/base.upload.directive";
 import {BaseUploadDirectiveFormGroup} from "../directive/base.upload.directive.form.group";
 import {BaseCustomerKeysPipe} from "../pipe/base.customer.keys.pipe";
 import {BaseAreaChooseComponent} from "../areaChoose/base.area.choose.component";
+import {BaseFormCreateComponent} from "../form/base.from.create.component";
 const appRoutes:Routes=[
   {
     path:"merchant",
     component:CreateMerchantFormComponent
   },
   {
-   path:"mallCatogery",
+   path:"category",
    component:CreateMallGoodsCatogeryFormComponent
    },
    {
@@ -35,9 +36,9 @@ const appRoutes:Routes=[
     path: "goods",
     component: CreateGoodsFormComponent,
   },
-  {path: "createMerchant", component: CreateMerchantFormComponent},
+  {path: "base", component: BaseFormCreateComponent},
   {
-    path: '**', redirectTo: "goods"
+    path: '**', redirectTo: "category"
   }
 ];
 @NgModule({
@@ -52,6 +53,7 @@ const appRoutes:Routes=[
     BaseUploadDirectiveFormGroup,
     CreateGoodsFormComponentFormGroup,
     CreateMerchantFormComponent,
+    BaseFormCreateComponent,
     BaseAreaChooseComponent
   ],
   imports: [
