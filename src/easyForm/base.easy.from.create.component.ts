@@ -6,12 +6,12 @@ import {BaseValidateService} from "../service/validate/base.validate.service";
 import {isArray} from "rxjs/util/isArray";
 
 @Component({
-  selector:"base-form-component",
-  templateUrl:"./base.from.create.component.html",
-  styleUrls:["./base.from.create.component.css"],
+  selector:"base-easy-form-component",
+  templateUrl:"./base.easy.from.create.component.html",
+  styleUrls:["./base.easy.from.create.component.css"],
   providers:[BaseCustomerKeysPipe,BaseDataService,BaseValidateService]
 })
-export class BaseFormCreateComponent implements OnChanges{
+export class BaseEasyFormCreateComponent implements OnChanges{
   formGroup:FormGroup;
   @Input()
   formModel:any;
@@ -28,6 +28,7 @@ export class BaseFormCreateComponent implements OnChanges{
       /*初步清洗部分冗余结构*/
       if(this.formModel.washData!=false){
         for(let key in value){
+          ////console.log(key+" is "+isArray(value[key]));
           if(isArray(value[key])&&value[key]){
             value[key]=value[key].map((item,seq)=>{
               if(item.type=="upload"){
@@ -50,7 +51,7 @@ export class BaseFormCreateComponent implements OnChanges{
       }
       this.formModel.submit(value);
     }else{
-      console.warn("formModel no submit property can't submit form!");
+      //console.warn("formModel no submit property can't submit form!");
     }
   }
 
@@ -61,6 +62,7 @@ export class BaseFormCreateComponent implements OnChanges{
   operateUtil($event:any,element:any,operateType:any,formControl:any,index:any){
     $event.stopPropagation();
     $event.preventDefault();
+    //console.log(element,operateType,formControl,index,typeof formControl,formControl instanceof FormControl);
     if(operateType=="remove"){
       formControl.setValue("");
     }else if(operateType=="left"){
@@ -85,6 +87,7 @@ export class BaseFormCreateComponent implements OnChanges{
           let optionModel:any={};
           option.type=item.type;
           for(let prop in option){
+            ////console.log("prop",prop)
             if(prop=="value"){
               optionModel[prop]=[option[prop],
                 [(control:any)=>{
@@ -109,6 +112,7 @@ export class BaseFormCreateComponent implements OnChanges{
           }
           if(item.type=="checkbox"){
             let defaultValue:any=sourceData[item.prop]||item.defaultValue;
+            ////console.log(item.prop,"defaultValue",defaultValue)
             optionModel["checked"]=[defaultValue==option.value,
               [(control:any)=>{
                 let param:any={
@@ -123,6 +127,7 @@ export class BaseFormCreateComponent implements OnChanges{
                     param[key]=override[key];
                   }
                 }
+                //console.log("*************",item.label)
                 return this.baseValidateService.baseValidate(control,item.validate,param);
               }]
             ];
@@ -151,6 +156,7 @@ export class BaseFormCreateComponent implements OnChanges{
         let keyPropMap:any={};
         const addressFGs:any = item.options.map((option:any,index:any) => {
           let defaultValue:any=sourceData[option.prop]||option["value"];
+          //console.log(option.prop,"defaultValue",defaultValue)
           option["value"]=[defaultValue,[(control:any)=>{
             let param:any={
               formModel:this.formModel,
@@ -211,6 +217,7 @@ export class BaseFormCreateComponent implements OnChanges{
           ,item.asyncValidates];
       }else{
         let defaultValue:any=sourceData[item.prop]||item.defaultValue;
+        //console.log(item.prop,"defaultValue",defaultValue)
         formGroupModel[item.prop]=[defaultValue,
           [(control:any)=>{
             let param:any={

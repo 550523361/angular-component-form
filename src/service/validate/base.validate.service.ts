@@ -24,7 +24,7 @@ export class BaseValidateService extends BaseDataService{
     let error:any=null;
     let value:any=prop.value||"";
     for(let key in rulues){
-      console.log("prop",prop,"keykeykey",key)
+      ////console.log("prop",param.prop,"keykeykey",key)
       let ruleValue:any=rulues[key];
       if(key=="required"&&value==""){
         error= {"required":"不能为空"};
@@ -36,6 +36,12 @@ export class BaseValidateService extends BaseDataService{
         error= {"maxlength":"不能少于"+ruleValue+"字符"};
         break;
       }else if(key=="number"){
+        let numberCheckResult:boolean=/^\d+(\.\d+)?$/.test(value);
+        console.log("numberCheckResult",numberCheckResult)
+        if(!numberCheckResult){
+          error= {"number":"请输入数字！"};
+          break;
+        }
         let pattenStr:any=ruleValue;
         let splitArr:any=pattenStr.split(".");
         let aboveZero:any=null;
@@ -99,7 +105,7 @@ export class BaseValidateService extends BaseDataService{
           if(checkedNum==0){
             grandfatherControl.setErrors({"required":"至少得选择一个吧！"});
           }
-          //clearTimeout(lazyTimerId);
+          clearTimeout(lazyTimerId);
         },10);
       }else if(key=="arrayUploadRequired"){
         error= {};
@@ -109,7 +115,7 @@ export class BaseValidateService extends BaseDataService{
           continue;
         }
         let grandfatherControl:any=formGroup.get(grandfather);
-        console.log("grandfatherControl",grandfatherControl)
+        //console.log("grandfatherControl",grandfatherControl)
         if(prop.parent){
           let lazyTimerId:any=setTimeout(function () {
             let checkedNum:any=prop.parent.parent.controls.filter((optionControl:any)=>{
@@ -127,7 +133,7 @@ export class BaseValidateService extends BaseDataService{
               grandfatherControl.setErrors({});
               grandfatherControl.setValue("");
             }
-            //clearTimeout(lazyTimerId);
+            clearTimeout(lazyTimerId);
           },10);
         }
       }else if(key=="checkboxWatchers"){
@@ -164,7 +170,7 @@ export class BaseValidateService extends BaseDataService{
                 }
               }
             });
-            //clearTimeout(lazyTimerId);
+            clearTimeout(lazyTimerId);
           },10);
         }
         break;
@@ -199,7 +205,7 @@ export class BaseValidateService extends BaseDataService{
                     if(value==""||value==null){
                       option["options"]=option.remoteInfo.convert({});
                     }else{
-                      console.log("element",element.prop)
+                      ////console.log("element",element.prop)
                       this.listData({url:option.remoteInfo.url,param:option.remoteInfo.param,httpMethod:option.remoteInfo.httpMethod}).subscribe((data:any)=>{
                         option["options"]=option.remoteInfo.convert(data.json())||data.json();
                       });
@@ -243,7 +249,7 @@ export class BaseValidateService extends BaseDataService{
         break;
       }else if(key=="remote"){
         //http 远程验证。。。
-        console.log("paramparamparam",param)
+        ////console.log("paramparamparam",param)
         let formGroup:any=prop.parent;
         if(formGroup){
           let queryParam:any={};
